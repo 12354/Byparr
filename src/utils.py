@@ -102,6 +102,13 @@ async def get_camoufox(
         i_know_what_im_doing=True,
         config={"forceScopeAccess": True},  # add this when creating Camoufox instance
         disable_coop=True,  # add this when creating Camoufox instance
+        firefox_user_prefs={
+            "pdfjs.enableLazyLoading": False,
+            "pdfjs.disableAutoFetch": False,
+            "pdfjs.disableStream": False,
+            "pdfjs.disableRange": False,
+            "pdfjs.defaultZoomValue": "10",
+        },
     ) as browser_raw:
         # Cast to Browser since AsyncCamoufox always returns a Browser, not BrowserContext
         browser = cast("Browser", browser_raw)

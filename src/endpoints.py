@@ -4,6 +4,7 @@ import warnings
 from asyncio import wait_for
 from http import HTTPStatus
 from typing import Annotated
+from urllib.parse import urlparse
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import RedirectResponse
@@ -94,9 +95,14 @@ async def read_item(request: LinkRequest, dep: CamoufoxDep) -> LinkResponse:
     cookies = await dep.context.cookies()
 
     response_headers = page_request.headers if page_request else {}
+    # Check the original navigation response's Content-Type (set before PDF.js
+    # takes over rendering) and fall back to the URL extension — needed when a
+    # Cloudflare challenge precedes the PDF, so page_request points at the
+    # interstitial HTML instead of the final PDF response.
     content_type = response_headers.get("content-type", "").lower()
-    if "application/pdf" in content_type:
-        pdf_response = await dep.context.request.get(dep.page.url)
+    url_path = urlparse(request.url).path.lower()
+    if "application/pdf" in content_type or url_path.endswith(".pdf"):
+        pdf_response = await dep.context.request.get(request.url)
         response_body = base64.b64encode(await pdf_response.body()).decode("ascii")
         response_encoding = "base64"
     else:

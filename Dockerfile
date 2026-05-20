@@ -28,7 +28,7 @@ RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         libgtk-3-0 \
         libdbus-glib-1-2 \
-        libasound2 \
+        libasound2t64 \
         libx11-xcb1 \
         libxtst6 &&\
     uvx camoufox fetch &&\
@@ -48,7 +48,7 @@ RUN mkdir -p /cache &&\
     apt-get install -y --no-install-recommends \
         libgtk-3-0 \
         libdbus-glib-1-2 \
-        libasound2 \
+        libasound2t64 \
         libx11-xcb1 \
         libxtst6 &&\
     uv cache clean &&\

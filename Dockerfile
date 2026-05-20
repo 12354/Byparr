@@ -25,6 +25,12 @@ FROM base AS devcontainer
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends git &&\
     uvx playwright install-deps firefox &&\
+    apt-get install -y --no-install-recommends \
+        libgtk-3-0 \
+        libdbus-glib-1-2 \
+        libasound2 \
+        libx11-xcb1 \
+        libxtst6 &&\
     uvx camoufox fetch &&\
     apt-get clean &&\
     rm -rf /var/lib/apt/lists/*
@@ -39,6 +45,12 @@ RUN mkdir -p /cache &&\
     uv run camoufox fetch &&\
     apt-get update &&\
     uv run playwright install-deps firefox &&\
+    apt-get install -y --no-install-recommends \
+        libgtk-3-0 \
+        libdbus-glib-1-2 \
+        libasound2 \
+        libx11-xcb1 \
+        libxtst6 &&\
     uv cache clean &&\
     apt-get clean &&\
     rm -rf /var/lib/apt/lists/*

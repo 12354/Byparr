@@ -1,3 +1,4 @@
+import base64
 import time
 import warnings
 from asyncio import wait_for
@@ -92,6 +93,16 @@ async def read_item(request: LinkRequest, dep: CamoufoxDep) -> LinkResponse:
 
     cookies = await dep.context.cookies()
 
+    response_headers = page_request.headers if page_request else {}
+    content_type = response_headers.get("content-type", "").lower()
+    if "application/pdf" in content_type:
+        pdf_response = await dep.context.request.get(dep.page.url)
+        response_body = base64.b64encode(await pdf_response.body()).decode("ascii")
+        response_encoding = "base64"
+    else:
+        response_body = await dep.page.content()
+        response_encoding = ""
+
     return LinkResponse(
         message="Success",
         solution=Solution(
@@ -99,8 +110,9 @@ async def read_item(request: LinkRequest, dep: CamoufoxDep) -> LinkResponse:
             url=dep.page.url,
             status=status,
             cookies=cookies,
-            headers=page_request.headers if page_request else {},
-            response=await dep.page.content(),
+            headers=response_headers,
+            response=response_body,
+            response_encoding=response_encoding,
         ),
         start_timestamp=start_time,
     )

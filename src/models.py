@@ -38,6 +38,7 @@ class Solution(BaseModel):
     user_agent: str = ""
     headers: dict[str, Any] = {}
     response: str = ""
+    response_encoding: str = ""
 
 
 class LinkResponse(BaseModel):
